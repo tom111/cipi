@@ -1,0 +1,270 @@
+\documentclass[12pt]{amsart}
+
+\usepackage{latexsym}
+\usepackage{amscd}
+\usepackage{epsf}
+\usepackage{color}
+\usepackage{amsopn,fixltx2e,mparhack,microtype}
+\usepackage{amsfonts}
+\usepackage{euscript,mathrsfs} 
+\usepackage{graphicx}    % standard LaTeX graphics tool
+\usepackage{a4}
+
+\newcommand{\set}[1]{\left\lbrace #1 \right\rbrace} % standard set
+\newcommand{\defas}{\mathrel{\mathop{:}}=}   % Definition
+\renewcommand{\subset}{\subseteq}  % Subsetsymbols
+\renewcommand{\supset}{\supseteq}
+\newcommand{\todo}[1]{\{ \huge{Todo:}\normalsize #1 \}} % Todo
+\DeclareMathOperator*{\bigtimes}{\textnormal{\Large $\times$}} % Cartesian Product
+\newcommand{\comm}[1]{ }
+\providecommand{\abs}[1]{\left\lvert#1\right\rvert} 
+\providecommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\E}{\mathbb{E}} % expectation
+\renewcommand{\P}{\mathbb{P}} % probability
+\renewcommand{\d}{\mathrm{d}\:\!} %differential 
+\newcommand{\e}{\mathrm{e}} % Eulers Number
+\renewcommand{\i}{\mathrm{i}} % Imaginary Unit
+\newcommand{\Ind}[1]{\mathbbm{1}_{\lbrace #1 \rbrace}} % indicator function
+\newcommand{\Id}{\mathbbm{1}} % The identity map
+\newcommand{\ie}{i.e.\;}  % make i.e. not the end of a sentence
+\newcommand{\eg}{e.g.\;}  % make e.g. not the end of a sentence
+\newcommand{\etc}{etc.\;}
+\newcommand{\iid}{i.i.d.\;} % make i.i.d. not the end of sentence
+\newcommand{\cipi}{\texttt{CIPI}\,}
+
+\theoremstyle{plain}% default
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem*{cor}{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{exmp}[thm]{Example}
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\newtheorem*{note}{Note}
+\newtheorem{case}{Case}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title[CIPI]{Computing Information Projections Iteratively with \cipi}
+
+\author{L. Steiner and T. Kahle}
+\address{Max Planck Institute for Mathematics in the Sciences, Inselstrasse 22, D-04103 Leipzig, Germany}
+\email{\{kahle,steiner\}@mis.mpg.de}
+
+\date{\today}
+\begin{abstract}
+  some abstract\ldots
+\end{abstract}
+
+%% Maketitle here would insert a pagebreak
+\maketitle
+
+\section{Introduction}
+In this paper we describe the software tool \cipi. It can be used to compute so
+called information projections. Given an exponential family $\mathcal{E}$ of probability
+measures associated to a complete hypergraph on $\set{1,\ldots,N}$ (a ``hierarchical model'')
+\cipi computes, for a given measure $\hat{P}$, the minimizer of 
+\begin{equation*}
+  D(\hat{P}\parallel Q) \qquad Q\in\mathcal{E}, 
+\end{equation*} where $D$ is the \emph{Kullback-Leibler Divergence}. These
+Minimizers are of high intereset in several applications.
+The paper is organized as follows. In Section \ref{sec:theory} we introduce the
+theoretical background. In Section \ref{sec:usage} the technical details of
+using \cipi are described. 
+
+\begin{exmp}
+  Consider the problem of contingency tables. Assume, in a survey 1000 people in
+  Country A and Country B have been asked bout their smoking behaviour. This
+  yielded the following results
+  \begin{center}
+  \begin{tabular}[]{|l|c|c|}
+    \hline
+    & male & female \\
+    \hline
+    smoking & 152 & 271 \\
+    non-smoking & 319 & 258\\
+    \hline
+  \end{tabular}\hspace{1cm}
+  \begin{tabular}[]{|l|c|c|}
+    \hline
+    & male & female \\
+    \hline
+    smoking & 1 & 2 \\
+    non-smoking & 3 & 4\\
+    \hline
+  \end{tabular}
+\end{center}
+
+  A statistician might come up with the idea to test for independence by
+  measuring the Kullback-Leibler Divergence of the empirical distribution to the
+  ``closest'' approximation within the set of indipendent distributions, \ie the
+  set 
+  \begin{equation*}
+    \mathcal{E}_1 \defas \set{P : P\left( x_1,x_2 \right)) = P_1(x_1)P_2(x_2)}
+  \end{equation*}
+
+  He would now create two files called \texttt{A.dat}, \textttT{B.dat} with
+  containing, one sample per line. So \texttt{A.dat} would contain 152 lines
+  with the content ``00''. 271 lines with ``01'', 319 lines with ``10'' and 258
+  lines containing ``11''. \cipi will build the emperical measure from the data.
+  
+\end{exmp}
+
+\section{Information Theory}
+\label{sec:theory}
+In this section we introduce exponential families of probability
+measures, the Kullback-Leibler divergence and other notions.
+Throughout the whole paper, the set of states of the system is of compositional
+structure. By that we mean, for each site $v$ in a finite set $V \defas
+\set{1,\ldots, N}$ we have a configuration space $\mathcal{X}_v$. The set of all
+possible configurations is given as 
+\begin{equation*}
+\mathcal{X}_V \defas \bigtimes_{v\in V}\mathcal{X}_v,
+\end{equation*}and likewise for each subset $A\subset V$, $\mathcal{X}_A \defas
+\bigtimes_{v\in A}\mathcal{X}_v$.
+
+\subsection{Families of Probability Measures} 
+We now study probability distributions on the set
+$\mathcal{X}_V$. Consider 
+\[
+\overline{\mathcal{P}}(\mathcal{X}_V)
+\defas \set{P \in \mathbb{R}^{\mathcal{X}_V} : P(x) \geq 0,\,
+  \sum_{x\in\mathcal{X}_V} P(x) = 1},
+\]  
+the probability measures on
+the set $\mathcal{X}_V$.
+$\overline{\mathcal{P}}(\mathcal{X}_V)$ is naturally embedded in
+\[
+\mathbb{R}^{\mathcal{X}_V} \defas \set{f : \mathcal{X}_V \to \mathbb{R}},
+\] the vector space of real valued functions on $\mathcal{X}_V$.
+$\overline{\mathcal{P}}(\mathcal{X}_V)$ has the geometrical structure of a
+$(|\mathcal{X}_V| -1)$ dimensional simplex. For $P\in
+\overline{\mathcal{P}}(\mathcal{X}_V)$, we call \[ \mbox{supp}(P) \defas
+\set{x \in \mathcal{X}_V : P(x) > 0} \] the \emph{support} of
+$P$. For two distributions $P,Q \in \overline{\mathcal{P}}(\mathcal{X}_V)$,
+we can now define a notion of distance by
+\begin{equation*}
+  D(P\parallel Q ) \defas \left\lbrace 
+  \begin{array}{ll}
+    \sum_{x\in\mathcal{X}} P(x) \log_2
+    \frac{P(x)}{Q(x)} & \mbox{ if } \mbox{supp}(P) \subset
+    \mbox{supp}(Q) \\ 
+    \infty & \mbox{ otherwise}.
+  \end{array} \right.
+\end{equation*}
+$D(P\parallel Q)$ is called the \emph{Kullback-Leibler divergence} or
+\emph{relative entropy}, although not a metric it is non-negative and
+equals zero if and only if $P=Q$. 
+
+In Information Geometry one studies families of probability
+measures i.e. submanifolds of $\overline{\mathcal{P}}(\mathcal{X}_V)$. A
+very natural class of such families arises if we consider the
+exponential map
+\begin{equation*}
+  \exp : \mathbb{R}^{\mathcal{X}_V} \to \overline{\mathcal{P}}(\mathcal{X}_V) 
+  \qquad f \mapsto \frac{\e^{(f)}}{\sum_{x\in\mathcal{X}_V} \e^{(f(x))}}.
+\end{equation*}
+Then an \emph{exponential family} $\mathcal{E}_\mathcal{I}$ is the
+image of a linear subspace $\mathcal{I}$ of $\mathbb{R}^{\mathcal{X}_V}$.
+Exponential families are well known in statistical science. It can
+be seen, that minimization of $D(P\parallel Q)$ with respect to $Q$
+in an exponential family $\mathcal{E}$, is in fact equivalent to maximum
+likelihood estimation for $P$ in the family $\mathcal{E}$. On the
+other hand, geometrically, minimization of $D(P\parallel Q)$ could be
+interpreted as a projection, since $D$ is a kind of distance. These projections 
+play an important role in information geometry. 
+
+
+\subsection{Interaction Spaces}
+We exploit the compositional structure of $\mathcal{X}_V$ to 
+define the notion of interactions, that are localized in a subset of the nodes. 
+
+For any given $A\subset V$, we
+write $x\in \mathcal{X}_V$ as $x = (x_A,x_{V\setminus
+  A})$ with $x_A\in \mathcal{X}_A$, $x_{V \setminus
+  A}\in\mathcal{X}_{V \setminus A}$, \ie we distinguish between components in
+  $A$ and outside $A$. Then define ${\mathcal I}_A$ to be the
+subspace of functions that do not depend on the configurations
+$x_{V \setminus A}$:
+\begin{align*}
+  {\mathcal I}_A \defas \left\{ f \in {\mathbb R}^\mathcal{X} : 
+    f(x_A,x_{V \setminus A}) = f(x_A, x_{V
+      \setminus A}') \mbox{ for all $x_A \in \mathcal{X}_A$, $x_{V \setminus A}, 
+      x_{V \setminus A}' \in \mathcal{X}_{V
+        \setminus A}$} \right\}.
+\end{align*}
+Using these spaces as building blocks, one can define the interaction
+space corresponding to a hypergraph $\mathcal{A}$ 
+\[
+{\mathcal I}_\mathcal{A} \defas \sum_{ A \in \mathcal{A} } {\mathcal I}_A.
+\]
+The sum is the inner sum in $\mathbb{R}^{\mathcal{X}_V}$, \ie just the span of all
+the vectors on the right hand side.
+Associated with each of the interaction spaces is an exponential family
+$\mathcal{E}_{\mathcal{A}}
+\defas \exp(\mathcal{I}_k)$. For two hypergraphs $\mathcal{A} \subset
+\mathcal{B}$ one hase $\mathcal{E}_{\mathcal{A}}\subset
+\mathcal{E}_{\mathcal{B}}$. Typically one studies hierarchies of hypergraphs and
+exponential families\cite{KahOlbJosAy08}. The main example beeing the
+hypergraphs of fixed interaction order 
+\begin{equation*}
+  \mathcal{A}_k \defas \set{A\subset V : \abs{A} \leq k}  
+\end{equation*}
+This gives us a hierarchy of exponential families: 
+\[ {\mathcal E}_{1} \; \subseteq \;
+{\mathcal E}_{2} \subseteq \; \dots \subseteq \; {\mathcal E}_{N}.
+\] 
+It was studied in \cite{Amari01,ayknauf06} and found various
+applications in the theory of neural networks. 
+
+Note that $\mathcal{E}_N$ is the relative interior of
+$\overline{\mathcal{P}}(\mathcal{X}_V)$. In general, in the image of the
+exponential map, one has only distributions with full support. Probability
+zero corresponds to infinite energy which is only achievable by 
+limits of sequences of probability measures in an exponential family. It is an
+open question which of the possible support sets are achievable by such limit
+probability measures in a given exponential family. This questions is connected to
+the face structure of a convex polytope, the so called marginal polytope. See
+\cite{CziMa02,kahleay06} for details.
+For our application one can just pass to the closure(in $\mathbb{R}^n$) 
+of the exponential family. The algorithm we use, the iterated projection
+algorithm \cite{csiszarshields04}, is specially suited to scope
+with the problem of unobserved configurations. 
+
+
+\section{Usage}
+\label{sec:usage}
+\subsection{Parameters}
+Every call of \cipi is must be followed by the name of a file containing
+parameters. This file allows the following options
+\begin{description}
+  \item[N] The number of nodes.
+  \item[SetIterations] The number of times every set of cardinality $k$ is
+    visited in the projection loop.
+  \item[SlidingWindow] Specifies how the data is read. If SlidingWindow is set
+    to \textsc{true} then a datapoint can be a long sequence of symbols and the
+    statistic is generated using a sliding window of lenght N
+  \item[SamplesBinary] ???
+  \item[Aplhabet] specifies the alphabet which is used, \eg ``01'' or
+    ``AGCT''. 
+  \item[Hpergraph] Describes the Hypergraph of the hierarchical model
+\end{description}
+
+\subsection{Output}
+Currently \cipi prints to sdtout.
+
+\bibliographystyle{amsalpha}
+\bibliography{alotofstuff}
+
+\end{document}
+
+
+
+
+
