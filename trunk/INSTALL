@@ -1,0 +1,15 @@
+PREREQUISITES
+
+- A working installation of boost
+- CMake 
+
+INSTALLATION
+
+Unpack the source to directory of your choice
+
+Run the following
+1) cmake .
+2) make
+
+the executable "cipi" is located in the "src" directory and can be copied
+anywhere

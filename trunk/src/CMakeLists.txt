@@ -2,6 +2,7 @@ project(cipi)
 
 add_executable(cipi main.cpp functions.cpp ConfigFile.cpp Marginal.cpp Marginals.cpp)
 
+SET_TARGET_PROPERTIES(cipi PROPERTIES COMPILE_FLAGS "-Wall -O3 -fomit-frame-pointer -pipe")
 FIND_PACKAGE(Boost REQUIRED)
 IF (Boost_FOUND)
   Message("Boost found" ${Boost_LIBRARY_DIR})
