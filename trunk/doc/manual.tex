@@ -4,7 +4,7 @@
 \usepackage{amscd}
 \usepackage{epsf}
 \usepackage{color}
-\usepackage{amsopn,fixltx2e,mparhack,microtype}
+\usepackage{amsopn,fixltx2e,microtype}
 \usepackage{amsfonts}
 \usepackage{euscript,mathrsfs} 
 \usepackage{graphicx}    % standard LaTeX graphics tool
@@ -109,11 +109,42 @@ using \cipi are described.
     \mathcal{E}_1 \defas \set{P : P\left( x_1,x_2 \right)) = P_1(x_1)P_2(x_2)}
   \end{equation*}
 
-  He would now create two files called \texttt{A.dat}, \textttT{B.dat} with
+  He would now create two files called \texttt{A.dat}, \texttt{B.dat} with
   containing, one sample per line. So \texttt{A.dat} would contain 152 lines
   with the content ``00''. 271 lines with ``01'', 319 lines with ``10'' and 258
   lines containing ``11''. \cipi will build the emperical measure from the data.
-  
+  \texttt{B.dat} is filled correspondingly with the data of the second table. 
+
+  Then we need to specify the parameters in a file called \texttt{PARAM}. We
+  modify the example which is included, such that it has the follwing entries.
+  \begin{verbatim}
+  N=2
+  Alphabet=01
+  SetIterations=100
+  InputType=Sample
+  SlidingWindow=false
+  Hypergraph=
+  OutputFilePrefix=A
+  \end{verbatim}
+  Specifying an empty hypergraph will compute the projections to the exponential
+  families of $k$-Interactions. \texttt{cipi} will output several files and the
+  following messages.
+  \begin{verbatim}
+  writing p(0) to file A_p(0).txt
+  writing p(1) to file A_p(1).txt
+  writing p empirical to file A_p_empirical.txt
+  2 : 0.0185144
+  1 : 0.0135883
+
+  run cipi in 0s
+  read input in 0s
+  calculate projection in 0s
+  \end{verbatim} We are
+  primarily interested in the outputfile \texttt{A\_p(1).txt}. It contains the
+  projection of the empirical measure (saved in \texttt{A\_p\_empirical.txt} to
+  the exponential family $\mathcal{E}_1$. The KL-distance of the empirical
+  measure and this projection equals 0.0185144.
+
 \end{exmp}
 
 \section{Information Theory}
