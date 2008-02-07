@@ -302,6 +302,7 @@ int main(int argc, char *argv[]){
                string hypergraphnew;
                unsigned int semicolon;
                semicolon = hypergraph.find_first_of(';');
+               if(semicolon >= hypergraph.length())semicolon = hypergraph.length();
                hypergraphnew.assign(hypergraph,0,semicolon);
                hyps.push_back(hypergraphnew);
                hypergraph = hypergraph.erase(0,semicolon+1);

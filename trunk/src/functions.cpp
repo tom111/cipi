@@ -235,7 +235,7 @@ vector< set<unsigned int> > makeHypergraphBinary(string sets, unsigned int N){
        while(!sets.empty()){
            //extract subset from hypergraph
            unsigned int indexend = sets.find_first_of(")");
-           string curElement = sets.substr(1,indexend);
+           string curElement = sets.substr(1,indexend-1);
            sets = sets.erase(0,indexend+1);
            unsigned int indexbegin = sets.find_first_of("(");
            sets = sets.erase(0,indexbegin);
@@ -243,13 +243,14 @@ vector< set<unsigned int> > makeHypergraphBinary(string sets, unsigned int N){
            while(!curElement.empty()){
                       string curexpo;
                       //extrace element
-                      if(curElement.find_first_of(",") != curElement.length()-1){
+                      if(curElement.find_first_of(",") < curElement.length()){
                           curexpo = curElement.substr(0,curElement.find_first_of(","));
                           curElement = curElement.erase(0,curElement.find_first_of(",")+1);
                       }//fi
                       else {
                               curexpo = curElement;
-                              curElement = "";
+                              string dummy;
+                              curElement = dummy;
                       }//esle
                       //increase counter for number of elements
                       order++;
@@ -262,7 +263,6 @@ vector< set<unsigned int> > makeHypergraphBinary(string sets, unsigned int N){
            }//elihw
            //save binary subset in container for hypergraph
            returnMe[order].insert(binary);
-           
            //reset
            order = 0;
            binary = 0;
@@ -289,7 +289,6 @@ vector< vector<unsigned int> > findMaxElements(string hypergraph, unsigned int N
        
        //get binary representation of the hypergraph
        vector< set<unsigned int> > bin_hyp = makeHypergraphBinary(hypergraph,N);
-       
        //for every possible number of elements
        for(unsigned int j = 0; j < N; j++){
           set<unsigned int>::iterator orderend = bin_hyp[j].end();
