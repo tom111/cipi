@@ -59,10 +59,10 @@ vector< vector<unsigned int> > createAn(unsigned int n, unsigned int N){
                                vector< vector<unsigned int> > orders;
                                vector<unsigned int> dummy;
                                orders.reserve(N);
-                               for(unsigned int i = 0; i < N; i++)orders.push_back(dummy);
+                               for(unsigned int i = 0; i <= N; i++)orders.push_back(dummy);
                                bool binary[N];
                                unsigned int order = 0;
-                               unsigned int N2 = static_cast<unsigned int>(pow(2.0,static_cast<double>(N)))-1;
+                               unsigned int N2 = static_cast<unsigned int>(pow(2.0,static_cast<double>(N+1)))-1;
                                //find and save all A with n elements
                                for(unsigned int i = 1; i < N2 ; i++){
                                    order = makeBinary(binary, N, i);
@@ -130,8 +130,7 @@ void calculateSpecialProjection(string hypergraph, vector< vector<unsigned int> 
         //write file for p
         //prepare filename
         string filename(outputprefix+"_"+hypergraph+"_p.txt");
-        char fname[filename.size()];
-        filename.copy(fname,filename.size());
+        const char* fname = filename.c_str();
         //initalize file stream
         ofstream* out = new ofstream();
         (*out).open(fname);
@@ -141,8 +140,7 @@ void calculateSpecialProjection(string hypergraph, vector< vector<unsigned int> 
         //write file fpr p empirical
         //prepare filename
         filename = outputprefix+"_"+hypergraph+"_p_empirical.txt";
-        char fname2[filename.size()];
-        filename.copy(fname2,filename.size());
+        const char* fname2 = filename.c_str();
         //initalize file stream
         (*out).open(fname2);
         cerr << "write p empirical into file \"" << filename << "\"" << endl;
@@ -261,8 +259,7 @@ int main(int argc, char *argv[]){
               stringstream i_str;
               i_str << i;
               string filename(outputfileprefix+"_p("+i_str.str()+").txt");
-              char fname[filename.size()];
-              filename.copy(fname,filename.size());
+              const char* fname = filename.c_str();
                //initalize variables
               ofstream* out = new ofstream();
               (*out).open(fname);
@@ -273,8 +270,7 @@ int main(int argc, char *argv[]){
           //write p empirical to file 
           //prepare filename
           string filename(outputfileprefix +"_p_empirical.txt");
-          char fname[filename.size()];
-          filename.copy(fname,filename.size());
+          const char* fname = filename.c_str();
           //initalize variables
           ofstream* out = new ofstream();
           (*out).open(fname);

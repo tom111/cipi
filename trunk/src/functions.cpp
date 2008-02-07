@@ -285,50 +285,63 @@ vector< vector<unsigned int> > findMaxElements(string hypergraph, unsigned int N
         //prepare container for max. elements of hypergraph
        vector<unsigned int> current;
        vector< vector<unsigned int> > returnMe;
-       for(unsigned int i = 0; i < N; i++)returnMe.push_back(current);
-       
+       for(unsigned int i = 0; i <= N; i++)returnMe.push_back(current);
+       vector < set <unsigned int > >temp;
+       set<unsigned int> dummy;
+       for(unsigned int i = 0; i <= N; i++)temp.push_back(dummy);
+       vector< vector < set<unsigned int>::iterator> > deleteus;
+       vector < set<unsigned int>::iterator> deldummy;
+       for(unsigned int i = 0; i <= N; i++)deleteus.push_back(deldummy);
        //get binary representation of the hypergraph
        vector< set<unsigned int> > bin_hyp = makeHypergraphBinary(hypergraph,N);
        //for every possible number of elements
-       for(unsigned int j = 0; j < N; j++){
+       for(unsigned int j = 0; j <= N; j++){
           set<unsigned int>::iterator orderend = bin_hyp[j].end();
-          //for every subset with j+1 elements
+          //for every subset with j elements
           for(set<unsigned int>::iterator i = bin_hyp[j].begin(); i != orderend; ++i){
              bool uncomparible = true;
-             vector< vector<unsigned int>::iterator> deleteus;
-             //for every element already max. elemnts
-             for(vector<vector<unsigned int> >::iterator l = returnMe.begin(); l != returnMe.end(); ++l){
+             //for every element already max. element
+             for(unsigned int l = 0; l < temp.size(); l++){
                  bool breakmax = false;
-                 vector< vector<unsigned int>::iterator> deleteus;
-                 for(vector<unsigned int>::iterator k = (*l).begin(); k != (*l).end(); ++k){
+                 for(set<unsigned int>::iterator k = temp[l].begin(); k != temp[l].end(); ++k){
                      //a is part of b if a&~b==0
                      //if current subset part of current max elment
-                     if((*i)&~(*k) == 0){
+                     unsigned int test = ((*i)&~(*k));
+                     if(test == 0){
                         //mark subset as comparible
                         uncomparible = false;
                         breakmax = true;
                         break;
                      }//fi
-                     else if((*k)&~(*i) == 0){
+                     test = ((*k)&~(*i));
+                     if(test == 0){
                         //if current max. element part of current subset
                         //mark subset as comparible, insert subset into max 
                         //elments and mark current max. element as deleted
                         uncomparible = false;
-                        deleteus.push_back(k);
-                        returnMe[j].push_back((*i));
+                        deleteus[l].push_back(k);
+                        temp[j].insert((*i));
                      }//fi esle
-                 }//Rof
-                 //delete max. elements which marked as deleted
-                 for(unsigned int k = 0; k < deleteus.size(); k++){
-                     (*l).erase(deleteus[k]);
                  }//rof
                  if(breakmax)break;
              }//rof
              //insert uncomparible subset to max. elements
-             if(uncomparible)returnMe[j].push_back((*i));
+             if(uncomparible)temp[j].insert((*i));
           }//rof
           //delete all subsets with j elemtents in bin_hyp
-          bin_hyp[j].clear();
+          //bin_hyp[j].clear();
+       }//rof
+       //delete deleteus in max elements
+       for(unsigned int i = 0; i < deleteus.size(); i++){
+           for(vector < set<unsigned int>::iterator>::iterator l = deleteus[i].begin(); l != deleteus[i].end(); ++l){
+               if(temp[i].find((*(*l))) != temp[i].end())temp[i].erase(*l);
+           }//rof
+       }//rof
+       //write into returnMe
+       for(unsigned int i = 0; i < temp.size(); i++){
+           for(set<unsigned int>::iterator l = temp[i].begin(); l != temp[i].end(); ++l){
+               returnMe[i].push_back(*l);
+           }//rof
        }//rof
        
        return returnMe;

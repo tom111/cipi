@@ -1,0 +1,35 @@
+# Init File for Information Complexity Program				
+# Comments start with #							
+
+
+
+
+# Definitions:								
+#									
+# N - Number of Nodes ( > 24 will result in inconsitent behaviour)	
+# SetIterations - Number of iterativ Scalings 				
+N = 2
+SetIterations = 50
+
+
+#input format: sequence of characters,line beginning with ">" seperates samples; use sliding window for read input
+#InputType=CharacterSequence
+#
+#samples coded by integers
+#InputType=Integer
+#
+#list of samples, every line is one sample
+InputType=Sample
+
+#name prefix for the output file containing the distributions, leave empty for no output
+#OutputFilePrefix = 
+OutputFilePrefix = A
+
+#alphabet
+Alphabet = 01
+
+#hypergraph, seperate hypergraphs with ";"(";" behind last hypergraph is not necessary)
+#Ax or ax for hypergraph with all sets with x elements
+#Hypergraph = A2;a1
+#Hypergraph = (1,2);(1),(2);
+Hypergraph = 
