@@ -180,6 +180,7 @@ void calculateSpecialProjection(string hypergraph, vector< vector<unsigned int> 
      }//fi
      //write results into global result vector
      results[res_i]=KullbackLeiberDistance(pEmp, current);
+     semaphore.pop_back();
 }
 
 
@@ -213,6 +214,17 @@ int main(int argc, char *argv[]){
     
     //initialize variables with value from cl and parameter file
     ifstream* sampleInFile = new ifstream(argv[2]);
+    if(!(*sampleInFile).is_open()){
+       cerr << "Could not open input file " << argv[2] << endl;
+       return 1;
+    }
+    ifstream* confFile = new ifstream(argv[1]);
+    if(!(*confFile).is_open()){
+       cerr << "Could not open parameter file " << argv[1] << endl;
+       return 1;
+    }else{
+          (*confFile).close();
+    }
     ConfigFile config(argv[1]);
     const unsigned int N = config.read<unsigned int>("N");
     const int IT = config.read<int>("SetIterations");
@@ -334,6 +346,16 @@ int main(int argc, char *argv[]){
          vector<string> hyps;
          while(hypergraph != ""){
                //while still hypergraphs given execute Cipi for them
+               
+               //while already max number of processes wait
+               while(semaphore.size() >= maxProcessNum-1){
+                     #ifdef WIN32
+                     Sleep(10*1000); 
+                     #else 
+                     sleep(10); 
+                     #endif
+               }
+               semaphore.push_back(1);
                //initialize/reset same variables
                results.push_back(0.0);
                string hypergraphnew;

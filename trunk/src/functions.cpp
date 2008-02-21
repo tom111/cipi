@@ -1,27 +1,3 @@
-/*
- *  functions.cpp 
- *
- *  Copyright (C) 2007, 2008 Lydia Steiner and Thomas Kahle
- *  <{steiner,kahle}@mis.mpg.de>
- *
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or (at
- *  your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful, but
- *  WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License along
- *  with this program; if not, write to the Free Software Foundation, Inc.,
- *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
- *
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- */
 #include "functions.h"
 
 using namespace std;
@@ -143,7 +119,8 @@ vector<double> readInputViaSlidingWindow(ifstream* samplesfile, unsigned int win
                (*samplesfile).close();
                //create ditribution of samples by dividing through numbers of samples
                for(unsigned int i = 0; i < ele_nr; i++)samples[i] /= samplesize;
-               
+               //notify user that no sample could be found
+               if(samplesize == 0)cerr << "Could not find samples in input file!" << endl;
                return samples;
 }
 
@@ -186,17 +163,21 @@ vector<double> readInputFromLine(ifstream* samplesfile,unsigned int N, unsigned 
                             //update exponent
                             baseExp *= (*alphabet).size();
                         }//rof
-                        //count sample in distribution
-                        samples[samplevalue]++;
-                        //increase samples counter
-                        samplesize++;
+                        //if samplevalue is a valid sample
+                        if(samplevalue >=0 && samplevalue < ele_nr){
+                           //count sample in distribution 
+                           samples[samplevalue]++;
+                           //increase samples counter
+                           samplesize++;
+                        }
                  }//elihw
              }//fi
              //close file
              (*samplesfile).close();
              //create samples distribution by dividing through samples counter
              for(unsigned int i = 0; i < ele_nr; i++)samples[i] /= samplesize;
-             
+             //notify user that no sample could be found
+             if(samplesize == 0)cerr << "Could not find samples in input file!" << endl;  
              return samples;
 }
 
@@ -235,7 +216,8 @@ vector<double> readInputFromLineToBinaryString(ifstream* samplesfile, unsigned i
                (*samplesfile).close();
                //create distribution by dividing through number of samples
                for(unsigned int i = 0; i < ele_nr; i++)samples[i] /= samplesize;
-   
+               //notify user that no sample could be found
+               if(samplesize == 0)cerr << "Could not find samples in input file!" << endl;
                return samples;
 }
 
