@@ -33,3 +33,6 @@ Alphabet = 01
 #Hypergraph = A2;a1
 #Hypergraph = (1,2);(1),(2);
 Hypergraph = 
+
+#max number of threads running at the same time(including main thread)
+NumberOfProcesses = 6

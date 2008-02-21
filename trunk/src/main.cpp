@@ -38,6 +38,11 @@
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
+#ifdef WIN32
+       #include <windows.h>
+#else 
+      #include <unistd.h>
+#endif
 
 #include "ConfigFile.h"
 #include "functions.h"
@@ -50,6 +55,7 @@ using namespace std;
 
 //vector used for synchronize output
 vector< double > results;
+vector<bool> semaphore;
 
 
 
@@ -70,6 +76,7 @@ void calculateProjection(vector<unsigned int> order, int N, vector<double> pEmp,
      for(int j = 0; j < IT; j++){
          (*p) = (marginals).doScaling((*p));
      }//rof
+     semaphore.pop_back();
 }
 
 /*
@@ -209,11 +216,11 @@ int main(int argc, char *argv[]){
     ConfigFile config(argv[1]);
     const unsigned int N = config.read<unsigned int>("N");
     const int IT = config.read<int>("SetIterations");
-    //const bool slidingWindow = config.read<bool>("SlidingWindow");
     const string inputType = config.read<string>("InputType");
     const string alphabetComplete = config.read<string>("Alphabet");
     const string outputfileprefix = config.read<string>("OutputFilePrefix");
     string hypergraph = config.read<string>("Hypergraph");
+    const unsigned int maxProcessNum = config.read<int>("NumberOfProcesses");
     map<char,unsigned int> alphabet;
     const unsigned int NX = static_cast<unsigned int>(pow(static_cast<double>(alphabetComplete.size()),static_cast<double>(N)));
     vector< vector<double> > p;
@@ -266,11 +273,20 @@ int main(int argc, char *argv[]){
            orders[order].push_back(i);
        }//rof
        boost::thread_group thrds;
-       
        //calculate projection for every order(=subset containg all "A's" with same size)
        //use one thread per order
        for(unsigned int i = 1; i < orders.size(); i++){
+           //while already max number of processes wait
+           while(semaphore.size() >= maxProcessNum-1){
+                 #ifdef WIN32
+                 Sleep(10*1000); 
+                 #else 
+                 sleep(10); 
+                 #endif
+           }
+           semaphore.push_back(1);
            thrds.create_thread(boost::bind(&calculateProjection,orders[i], N, pEmp, i, alphabet.size(), &(p[i]), IT));
+           
        }//rof
        
        //wait until all threads finished there work

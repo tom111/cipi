@@ -60,7 +60,7 @@ double KullbackLeiberDistance(vector<double> p, vector<double> q){
        //sum up over all elements in p 
        for(unsigned int i = 0; i < p.size(); i++){
            //sum up if p not 0
-           if (p[i] != 0) distance += (log(p[i]/q[i])*p[i]);
+           if (p[i] != 0) distance += ((log(p[i]/q[i])/0.6931471805599452862)*p[i]);
        }//rof
        return distance;
 }
