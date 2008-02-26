@@ -130,9 +130,9 @@ using \cipi are described.
   Alphabet=01
   SetIterations=100
   InputType=Sample
-  SlidingWindow=false
   Hypergraph=
   OutputFilePrefix=A
+  NumberOfProcesses=3
   \end{verbatim}
   Specifying an empty hypergraph will compute the projections to the exponential
   families of $k$-Interactions. \texttt{cipi} will output several files and the
@@ -978,13 +978,13 @@ parameters. This file allows the following options
   \item[N] The number of nodes.
   \item[SetIterations] The number of times every set of cardinality $k$ is
     visited in the projection loop.
-  \item[SlidingWindow] Specifies how the data is read. If SlidingWindow is set
-    to \textsc{true} then a datapoint can be a long sequence of symbols and the
-    statistic is generated using a sliding window of lenght N
-  \item[SamplesBinary] ???
-  \item[Aplhabet] specifies the alphabet which is used, \eg ``01'' or
+  \item[InputType] Specifies how the data is read. Possible values are CharacterSequence(datapoint is a long sequence of symbols and the
+    statistic is generated using a sliding window of lenght N), Sample(every line is a sample) and Integer(every line is a sample and these samples are coded as integer). 
+  \item[Alphabet] specifies the alphabet which is used, \eg ``01'' or
     ``AGCT''. 
   \item[Hpergraph] Describes the Hypergraph of the hierarchical model
+  \item[OutputFilePrefix] Beginning of the file name used for the output files. 
+  \item[NumberOfProcesses] Maximum number of processes running at the same time. 
 \end{description}
 
 \subsection{Output}
