@@ -62,6 +62,8 @@ vector<double> readInputViaSlidingWindow(ifstream* samplesfile, unsigned int win
                unsigned int letterread = 0;
                //char currently read from file
                char nuc;
+	       //error flag
+	       bool invalid = false;
                //needed to split first postion of a sample
                unsigned int mod = ele_nr/(*alphabet).size();
                //prepare samples vector
@@ -94,6 +96,12 @@ vector<double> readInputViaSlidingWindow(ifstream* samplesfile, unsigned int win
                        oneSample *= (*alphabet).size();
                        //if nuc not in alphabet
                        if((*alphabet).find(nuc) == (*alphabet).end()){
+		       	   if(!invalid){
+				//set error flag 
+				invalid = true;
+				//inform user
+				cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
+			    }//fi
                            //reset all and next char
                            oneSample = 0;
                            letterread = 0;
@@ -141,6 +149,8 @@ vector<double> readInputFromLine(ifstream* samplesfile,unsigned int N, unsigned 
                unsigned int samplesize = 0;
                //one sample as string
                string onesample("");
+	       //error flag 
+	       bool invalid = false;
                //initialize vector for samples
                for(unsigned int i = 0; i < ele_nr; i++)samples.push_back(0.0);
                //if file could be opened
@@ -164,12 +174,18 @@ vector<double> readInputFromLine(ifstream* samplesfile,unsigned int N, unsigned 
                             baseExp *= (*alphabet).size();
                         }//rof
                         //if samplevalue is a valid sample
-                        if(samplevalue >=0 && samplevalue < ele_nr){
+                        if(samplevalue >=0 && samplevalue < ele_nr && onesample.size() == N){
                            //count sample in distribution 
                            samples[samplevalue]++;
                            //increase samples counter
                            samplesize++;
-                        }
+                        }//fi
+			else if(!invalid){
+				//set error flag 
+				invalid = true;
+				//inform user
+				cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
+			}//fi esle
                  }//elihw
              }//fi
              //close file
@@ -198,6 +214,8 @@ vector<double> readInputFromLineToBinaryString(ifstream* samplesfile, unsigned i
                unsigned int samplesize = 0;
                //one sample
                unsigned int onesample;
+	       //error flag
+	       bool invalid = false;
                //initalize distribution vector
                for(unsigned int i = 0; i < ele_nr; i++)samples.push_back(0.0);
                
@@ -209,7 +227,13 @@ vector<double> readInputFromLineToBinaryString(ifstream* samplesfile, unsigned i
                             //count sample and increase samples counter
                             samples[onesample]++;
                             samplesize++;
-                        }
+                        }//fi
+			else if(!invalid){
+				//set error flag 
+				invalid = true;
+				//inform user
+				cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
+			}//fi esle
                   }//elihw
                }//fi
                //close file
