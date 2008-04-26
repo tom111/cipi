@@ -62,8 +62,8 @@ vector<double> readInputViaSlidingWindow(ifstream* samplesfile, unsigned int win
                unsigned int letterread = 0;
                //char currently read from file
                char nuc;
-	       //error flag
-	       bool invalid = false;
+	           //error flag
+               bool invalid = false;
                //needed to split first postion of a sample
                unsigned int mod = ele_nr/(*alphabet).size();
                //prepare samples vector
@@ -134,6 +134,117 @@ vector<double> readInputViaSlidingWindow(ifstream* samplesfile, unsigned int win
 
 /*
  * PARAMS:
+ * samplesfile - input file stream for file containing empirical p
+ * N - length of one samples
+ * ele_nr - number of different elements for distribution
+ * alphabet - mapping from used alphabet to unsigned int's
+ * RETURN:
+ * samples  given p empirical as vector of doubles
+ */
+vector<double> readInputFromPEmp(ifstream* samplesfile, unsigned int N, unsigned int ele_nr, map<char,unsigned int>* alphabet){
+               //initialize variables
+               //vector containing samples distribution
+               vector<double> samples;
+               //sample as string
+               string sample("");
+               //probability as string
+               string prob_str("");
+               //string stream for converting probability from string to double
+               stringstream converter;
+               //probability as double
+               double probability = 0.0;
+               //unsigned int coding sample
+               unsigned int sampleCode = 0;
+               //error flag
+               bool error = false;
+               //probability's sum 
+               double sum = 0.0;
+               //initialize samples vector
+               for(unsigned int i = 0; i < ele_nr; i++)samples.push_back(0.0);
+               
+               //open file
+               if((*samplesfile).is_open()){
+                  //until reaching end of file
+                  while(!(*samplesfile).eof()){
+                       //initialize string for line
+                       string line("");
+                       //read line
+                       getline((*samplesfile),line);
+                       //if line is not in correct format go to next line
+                       if(line == "" || line.find("\t") == line.size())continue;
+                       //split into sample and probability
+                       sample = line.substr(0,line.find("\t"));
+                       prob_str = line.substr(line.find("\t") + 1);
+                       //if the sample is too short or too large go to next line
+                       if(sample.length() != N){
+                          //if first error report it
+                          if(!error){
+                             cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
+                             error = true;
+                          }
+                          continue;
+                       }
+                       //if probability string is not correct got to next line
+                       string numbers("0123456789e-");
+                       if(prob_str.find_first_of("0") != 0 
+                          || (prob_str.find_first_of(".") != 1 && prob_str.find_first_of(".")< prob_str.length())
+                          || (prob_str.find_last_not_of(numbers) != 1 && prob_str.find_last_not_of(numbers) < prob_str.length())
+                          || (prob_str.find_first_of("e") != prob_str.length() && prob_str.find_first_of("e") != prob_str.find_last_of("e"))
+                          || (prob_str.find_first_of("-") != prob_str.length() && prob_str.find_first_of("-") != prob_str.find_last_of("-"))){
+                          //if first error
+                          if(!error){
+                             cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
+                             error = true;
+                          }
+                          continue;
+                       }
+                       //reset sampleCode
+                       sampleCode = 0;
+                       //initalize baseExp
+                       unsigned int baseExp = 1;
+                       //unknow sign error
+                       bool unknownSign = false;
+                       for(unsigned int i = 0; i < N; i++){
+                           //get char at current position
+                           char letter = sample[sample.length() - 1 - i];
+                           //convert to lower case
+                           if(isalpha(letter) && isupper(letter))letter = tolower(letter);
+                           //find letter
+                           if((*alphabet).find(letter) == (*alphabet).end()){
+                              //if first error report it
+                              if(!error){
+                                 cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
+                                 error = true;
+                              }
+                              unknownSign = true; 
+                              break;
+                           }//fi
+                           //add to samplecode
+                           sampleCode += ((*alphabet)[letter]*baseExp);
+                           //update baseExp for next position
+                           baseExp *= (*alphabet).size();
+                       }//rof
+                       //unknown letter in sample, go to next line
+                       if(unknownSign)continue;
+                       //convert probability
+                       converter.clear();
+                       converter.str(prob_str);
+                       converter >> probability;
+                       //sum up probability
+                       sum += probability;
+                       //save sample in vector
+                       samples[sampleCode] = probability;
+                  }//elihw
+               }//fi
+               //if sum of probability is not 1 than warn user
+               if(sum < 1.0)cerr << "Sum of probability < 1!" << endl;
+               if(sum > 1.0)cerr << "Sum of probability > 1!" << endl;
+               //return vector
+               return samples;
+}
+
+/*
+ * PARAMS:
  * samplesfile - input file stream for file containing samples
  * N - length of one samples
  * ele_nr - number of different elements for distribution
@@ -149,8 +260,8 @@ vector<double> readInputFromLine(ifstream* samplesfile,unsigned int N, unsigned 
                unsigned int samplesize = 0;
                //one sample as string
                string onesample("");
-	       //error flag 
-	       bool invalid = false;
+	           //error flag 
+	           bool invalid = false;
                //initialize vector for samples
                for(unsigned int i = 0; i < ele_nr; i++)samples.push_back(0.0);
                //if file could be opened
@@ -180,7 +291,7 @@ vector<double> readInputFromLine(ifstream* samplesfile,unsigned int N, unsigned 
                            //increase samples counter
                            samplesize++;
                         }//fi
-			else if(!invalid){
+            else if(!invalid){
 				//set error flag 
 				invalid = true;
 				//inform user

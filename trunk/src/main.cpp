@@ -250,6 +250,7 @@ int main(int argc, char *argv[]){
     if(inputType == "CharacterSequence")pEmp = readInputViaSlidingWindow(sampleInFile,N,NX,&alphabet);
     else if(inputType == "Sample")pEmp = readInputFromLine(sampleInFile,N,NX,&alphabet);
     else if(inputType == "Integer")pEmp = readInputFromLineToBinaryString(sampleInFile,NX,&alphabet);
+    else if(inputType == "Empirical")pEmp = readInputFromPEmp(sampleInFile,N,NX,&alphabet);
     else{
          cerr << "Wrong input typ! " << inputType << "is not an input type." << endl;
          return 1;

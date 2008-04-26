@@ -48,6 +48,10 @@ unsigned int makeBinary(bool *binary,unsigned int length,unsigned int number);
 //under the condition that word at pos i of vector 1 = w at pos i of vector 2
 double KullbackLeiberDistance(std::vector<double> p, std::vector<double> q);
 
+//read input from file stream, input given as p empirical 
+//returns vector of samples
+std::vector<double> readInputFromPEmp(std::ifstream* samplesfile, unsigned int N, unsigned int ele_nr, std::map<char,unsigned int>* alphabet);
+
 //read input from given file stream with sliding window of size windowSize
 //returns vector of samles
 std::vector<double> readInputViaSlidingWindow(std::ifstream* samplesfile,unsigned int windowsSize, unsigned int ele_nr, std::map<char,unsigned int>* alphabet);

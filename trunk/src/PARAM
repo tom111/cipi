@@ -19,7 +19,9 @@ SetIterations = 50
 #InputType=Integer
 #
 #list of samples, every line is one sample
-InputType=Sample
+#InputType=Sample
+#p empirical file, line consists of konfiguration tab probability
+InputType=Empirical
 
 #name prefix for the output file containing the distributions, leave empty for no output
 #OutputFilePrefix = 
