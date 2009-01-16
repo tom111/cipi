@@ -37,6 +37,7 @@
 #include <fstream>
 #include <sstream>
 #include <cctype>
+#include <algorithm>
 
 
 //calculate binary representation with size size of number as boolean array
