@@ -139,7 +139,7 @@ vector<double> readInputViaSlidingWindow(ifstream* samplesfile, unsigned int win
  * ele_nr - number of different elements for distribution
  * alphabet - mapping from used alphabet to unsigned int's
  * RETURN:
- * samples  given p empirical as vector of doubles
+ * samples given p empirical as vector of doubles
  */
 vector<double> readInputFromPEmp(ifstream* samplesfile, unsigned int N, unsigned int ele_nr, map<char,unsigned int>* alphabet){
                //initialize variables
@@ -237,8 +237,17 @@ vector<double> readInputFromPEmp(ifstream* samplesfile, unsigned int N, unsigned
                   }//elihw
                }//fi
                //if sum of probability is not 1 than warn user
-               if(sum < 1.0)cerr << "Sum of probability < 1!" << endl;
-               if(sum > 1.0)cerr << "Sum of probability > 1!" << endl;
+               if(sum < 1.0) {
+		 cout << "Sum of probability < 1, normalizing !" << endl;
+		 for(unsigned int i = 0; i < ele_nr; i++) samples[i] /= sum;
+	       }
+               if(sum > 1.0) {
+		 cout << "Sum of probability > 1, normalizing !" << endl;
+		 for(unsigned int i = 0; i < ele_nr; i++) samples[i] /= sum;
+	       }
+	       // normalize :
+	       
+
                //return vector
                return samples;
 }
