@@ -54,7 +54,7 @@ double KullbackLeiberDistance(std::vector<double> p, std::vector<double> q);
 std::vector<double> readInputFromPEmp(std::ifstream* samplesfile, unsigned int N, unsigned int ele_nr, std::map<char,unsigned int>* alphabet);
 
 //read input from given file stream with sliding window of size windowSize
-//returns vector of samles
+//returns vector of samples
 std::vector<double> readInputViaSlidingWindow(std::ifstream* samplesfile,unsigned int windowsSize, unsigned int ele_nr, std::map<char,unsigned int>* alphabet);
 
 //read input from given file stream line per line

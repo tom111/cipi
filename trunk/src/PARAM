@@ -38,3 +38,10 @@ Hypergraph =
 
 #max number of threads running at the same time(including main thread)
 NumberOfProcesses = 3
+
+## Shall we print the result only and be silent otherwise ??
+## If this is set to true then the output will be I1 I2 I3, separated by ResultSep
+## Note that this only works if "Hypergraph" is empty, i.e. we are working with the 
+## uniform interactions.
+ResultOnly=true
+ResultSep=,

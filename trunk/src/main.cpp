@@ -231,6 +231,8 @@ int main(int argc, char *argv[]){
     const string inputType = config.read<string>("InputType");
     const string alphabetComplete = config.read<string>("Alphabet");
     const string outputfileprefix = config.read<string>("OutputFilePrefix");
+    const bool resultOnly = config.read<bool>("ResultOnly");
+    const string resultSep = config.read<string>("ResultSep");
     string hypergraph = config.read<string>("Hypergraph");
     const unsigned int maxProcessNum = config.read<int>("NumberOfProcesses");
     map<char,unsigned int> alphabet;
@@ -312,13 +314,13 @@ int main(int argc, char *argv[]){
               //prepare filename
               stringstream i_str;
               i_str << i;
-              string filename(outputfileprefix+"_p("+i_str.str()+").txt");
+              string filename(outputfileprefix+"_p"+i_str.str()+".txt");
               const char* fname = filename.c_str();
                //initalize variables
               ofstream* out = new ofstream();
               (*out).open(fname);
               //write to file
-              cerr << "writing p(" << i << ") to file " << filename << endl;
+              cerr << "writing p" << i << " to file " << filename << endl;
               writeProjectionToFile(&(p[i]),out,&ralphabet,N);
           }//rof
           //write p empirical to file 
@@ -334,12 +336,20 @@ int main(int argc, char *argv[]){
        }//fi
        
        //print I-vector(=vector of Kullback-Leiber-Distances)
-       cout << p.size() << " : " 
-            << KullbackLeiberDistance(pEmp, p.at(N-1)) << endl;
-       for(unsigned int i = p.size()-1; i > 0; i--){
-           cout << i << " : " 
-                << KullbackLeiberDistance(p.at(i), p.at(i-1)) << endl;
-       }//rof
+       if (resultOnly){
+	 for(unsigned int i = 1; i <= p.size()-1; i++){
+	   cout << KullbackLeiberDistance(p.at(i), p.at(i-1)) << resultSep << " ";
+	 }
+	 cout << KullbackLeiberDistance(pEmp, p.at(N-1));
+       }
+       else {
+	 cout << p.size() << " : " 
+	      << KullbackLeiberDistance(pEmp, p.at(N-1)) << endl;
+	 for(unsigned int i = p.size()-1; i > 0; i--){
+	   cout << i << " : " 
+		<< KullbackLeiberDistance(p.at(i), p.at(i-1)) << endl;
+	 } // for
+       } // else
     }//fi
     else{
          //only same defined "A's", fullfilling the characteristic of max. elemtents
