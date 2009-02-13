@@ -238,11 +238,11 @@ vector<double> readInputFromPEmp(ifstream* samplesfile, unsigned int N, unsigned
                }//fi
                //if sum of probability is not 1 than warn user
                if(sum < 1.0) {
-		 cout << "Sum of probability < 1, normalizing !" << endl;
+		 cerr << "Sum of probability < 1, normalizing !" << endl;
 		 for(unsigned int i = 0; i < ele_nr; i++) samples[i] /= sum;
 	       }
                if(sum > 1.0) {
-		 cout << "Sum of probability > 1, normalizing !" << endl;
+		 cerr << "Sum of probability > 1, normalizing !" << endl;
 		 for(unsigned int i = 0; i < ele_nr; i++) samples[i] /= sum;
 	       }
 	       // normalize :
