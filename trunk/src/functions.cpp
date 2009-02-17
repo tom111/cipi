@@ -185,20 +185,21 @@ vector<double> readInputFromPEmp(ifstream* samplesfile, unsigned int N, unsigned
                           continue;
                        }
                        //if probability string is not correct got to next line
-                       string numbers("0123456789e-");
-                       if(prob_str.find_first_of("0") != 0 
-                          || (prob_str.find_first_of(".") != 1 && prob_str.find_first_of(".")< prob_str.length())
-                          || (prob_str.find_last_not_of(numbers) != 1 && prob_str.find_last_not_of(numbers) < prob_str.length())
-                          || (prob_str.find_first_of("e") != prob_str.length() && prob_str.find_first_of("e") != prob_str.find_last_of("e"))
-                          || (prob_str.find_first_of("-") != prob_str.length() && prob_str.find_first_of("-") != prob_str.find_last_of("-"))){
-                          //if first error
-                          if(!error){
-                             cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
-                             error = true;
-                          }
-                          continue;
-                       }
-                       //reset sampleCode
+		       // This test is crazy and buggy !! Disabled as of rev. 23
+//                        string numbers("0123456789e-");
+//                        if(prob_str.find_first_of("0") != 0 
+//                           || (prob_str.find_first_of(".") != 1 && prob_str.find_first_of(".")< prob_str.length())
+//                           || (prob_str.find_last_not_of(numbers) != 1 && prob_str.find_last_not_of(numbers) < prob_str.length())
+//                           || (prob_str.find_first_of("e") != prob_str.length() && prob_str.find_first_of("e") != prob_str.find_last_of("e"))
+//                           || (prob_str.find_first_of("-") != prob_str.length() && prob_str.find_first_of("-") != prob_str.find_last_of("-"))){
+//                           //if first error
+//                           if(!error){
+//                              cerr << "Invalid sample! (All invalid samples will be ignored!)" << endl;
+//                              error = true;
+//                           }
+//                           continue;
+//                        }
+//                        //reset sampleCode
                        sampleCode = 0;
                        //initalize baseExp
                        unsigned int baseExp = 1;
