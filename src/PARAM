@@ -28,7 +28,7 @@ InputType=Sample
 OutputFilePrefix = A
 
 #alphabet
-Alphabet = AGCT
+Alphabet = 01
 
 #hypergraph, seperate hypergraphs with ";"(";" behind last hypergraph is not necessary)
 #Ax or ax for hypergraph with all sets with x elements
