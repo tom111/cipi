@@ -49,8 +49,6 @@ def project(A,H):
     su=0
     for h in H:
         su += E(A,count) *h
-        print h
-        print E(A,count) 
         count+=1
     return su
 
