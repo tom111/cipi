@@ -80,7 +80,6 @@ for p in P:
 
 # Take the logarithm of the probabilities
 P = [log (p) for p in P]
-print P
 
 # Iterating over the number of elements in P
 n2 = len(P)
