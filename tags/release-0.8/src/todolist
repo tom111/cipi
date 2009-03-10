@@ -1,7 +1,0 @@
--- 
-Lizenz von ConfigFile ist nicht klar, koennen wir hier eine GPL Variante
-verwenden?
-ConfigFree steht unter der MIT license auch X11 License(http://en.wikipedia.org/wiki/MIT_License) genannt. Sie ist mit GPL kompartibel.
-Trotzdem muss ConfigFile.h und ConfigFile.cpp unter der MIT license veroeffentlicht werden. 
---
-
