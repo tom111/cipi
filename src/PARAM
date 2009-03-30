@@ -8,7 +8,7 @@
 #									
 # N - Number of Nodes ( > 24 will result in inconsitent behaviour)	
 # SetIterations - Number of iterativ Scalings 				
-N = 3 
+N = 6
 SetIterations = 50000
 
 
