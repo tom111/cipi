@@ -80,19 +80,28 @@ except IndexError:
 
 P = readPVector(Pfile)
 
+
 for p in P:
     if p<=0 or p>=1:
-        print 'Error, support of P is not full'
+        print 'Error, support of P is no probability vector'
         exit(1)
+
+n2 = len(P)
+
+# Uncomment to see the read in P
+#for i in range (n2):
+#    print bitString(i) + " : " + str(P[i])
+        
 
 # Take the logarithm of the probabilities
 P = [log (p) for p in P]
 
-print "This is the energy"
-print P
+#Uncomment to see the energy
+# print "This is the energy"
+# for i in range (n2):
+#    print bitString(i) + str(P[i])
 
 # Iterating over the number of elements in P
-n2 = len(P)
 
 # In this decomposition for each element we substract from all the
 # elements above it the respecetive coefficient.
@@ -106,14 +115,10 @@ indices.sort(key = lambda t:bitWeight(t))
 for i in indices:
     coeff = P[i]
     result.append([i, coeff])
-    for j in indices[i:]:
+    for j in indices:
         if isBelow(i,j):
             P[j] = P[j]-coeff;
-
-# Sorting the coefficients by bitweight
-# result.sort(key=lambda t:bitWeight(t[0]))
 
 for c in result:
     print  ' : '.join( [str(bitStringtoSet(bitString(c[0]))),str( c[1])])
 
-# Checking the result
