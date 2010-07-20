@@ -1,47 +1,58 @@
-# Init File for Information Complexity Program				
-# Comments start with #							
+# Init File for Information Complexity Program
+# Comments start with #
 
-
-
-
-# Definitions:								
-#									
-# N - Number of Nodes ( > 24 will result in inconsitent behaviour)	
-# SetIterations - Number of iterativ Scalings 				
+# Definitions:
+#		
+# N - Number of Nodes ( > 24 will result in inconsistent behaviour)
+# SetIterations - Number of iterative scalings. More -> More precision and computation time
 N = 6
 SetIterations = 50000
 
-
-#input format: sequence of characters,line beginning with ">" seperates samples; use sliding window for read input
-#InputType=CharacterSequence
-#
-#samples coded by integers
-#InputType=Integer
-#
-#list of samples, every line is one sample
-InputType=Sample
-#p empirical file, line consists of konfiguration tab probability
-#InputType=Empirical
-
-#name prefix for the output file containing the distributions, leave empty for no output
-#OutputFilePrefix = 
-OutputFilePrefix = A
-
-#alphabet
+# The alphabet to work with
 Alphabet = 01
 
-#hypergraph, seperate hypergraphs with ";"(";" behind last hypergraph is not necessary)
+
+### Uncomment one of the following to chose the input to use #######
+####################################################################
+
+#samples coded by integers in the base of the alphabet, one sample per line
+#InputType=Integer
+
+
+#list of samples, every line is one sample
+InputType=Sample
+
+#A distribution to be projected. Give the configuration tabstob probablity, e.g
+#00	0.25
+#11	0.75
+## These numbers should sum up to one
+#InputType=Empirical
+
+#Sliding Window over a sequence of characters. line beginning with ">" seperates samples;
+#InputType=CharacterSequence
+
+#name prefix for the output files containing distributions, leave empty for no output
+#OutputFilePrefix =
+OutputFilePrefix = A
+
+#Hypergraph(simplicial complex) defining the hierarchical model.
+#Enclose each set in paranthesis.
+#Different models can be given at the same time, seperate them with ";"
+#(";" behind last hypergraph is not necessary)
 #Ax or ax for hypergraph with all sets with x elements
+#pair interaction and independence
 #Hypergraph = A2;a1
+#Full simplex and independence
 #Hypergraph = (1,2);(1),(2);
 Hypergraph =
 
 #max number of threads running at the same time(including main thread)
+#This must be at least two (main + 1 worker)
 NumberOfProcesses = 3
 
 ## Shall we print the result only and be silent otherwise ??
 ## If this is set to true then the output will be I1 I2 I3, separated by ResultSep
-## Note that this only works if "Hypergraph" is empty, i.e. we are working with the 
+## Note that this only works if "Hypergraph" is empty, i.e. we are working with the
 ## uniform interactions.
 ResultOnly=true
 ResultSep=,
