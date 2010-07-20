@@ -11,3 +11,4 @@ IF (Boost_FOUND)
   TARGET_LINK_LIBRARIES (cipi boost_thread-mt)
 ENDIF (Boost_FOUND)
 
+INSTALL(PROGRAMS cipi DESTINATION bin)

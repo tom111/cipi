@@ -1,3 +1,8 @@
 cmake_minimum_required(VERSION 2.4)
+PROJECT(cipi)
+SET(CIPI_VERSION "1.0")
+OPTION(ENABLE_DOC "Build pdf-manual" FALSE)
 SUBDIRS(src)
-
+IF(ENABLE_DOC) 
+  SUBDIRS(doc)
+ENDIF(ENABLE_DOC)
