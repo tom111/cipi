@@ -1,0 +1,4 @@
+CMakeFiles/*
+CMakeCache*
+Makefile
+cmake_install*
