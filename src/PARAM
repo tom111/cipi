@@ -39,6 +39,7 @@ OutputFilePrefix = A
 #Enclose each set in paranthesis.
 #Different models can be given at the same time, seperate them with ";"
 #(";" behind last hypergraph is not necessary)
+#If this variable is empty it is equivalent to Hypergraph=a1;a2;...;aN
 #Ax or ax for hypergraph with all sets with x elements
 #pair interaction and independence
 #Hypergraph = A2;a1
